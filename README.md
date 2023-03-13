@@ -1,8 +1,5 @@
 # drg_scout
 
-Don't forget to include that people need to initialize their own db file:
+Project in progress! Will eventually allow user to track how often something(s) is mentioned on all of Reddit. For example, how often is "Italy" mentioned by name, or a list of your favorite Pokemon, etc.
 
-with app.app_context():
-    db.create_all()
-    
-This needs to be done after the db.Model has been outlined.
+Currently (3/13/23) the project searches for the catch-phrase "Rock and Stone" on the popular subreddit DeepRockGalactic and sends HTTP post requests to a Flask server which stores them in a sqlite database.
