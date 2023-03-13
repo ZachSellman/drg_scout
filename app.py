@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 
 
 class Mention(db.Model):
-    submission_id = db.Column(db.Integer, primary_key=True)
+    submission_id = db.Column(db.String(20), primary_key=True)
     post_date = db.Column(db.String(20), nullable=False)
     sub_reddit = db.Column(db.String(25), nullable=False)
 

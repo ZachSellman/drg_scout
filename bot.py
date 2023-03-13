@@ -6,9 +6,12 @@ from os import getenv
 from dotenv import load_dotenv
 import praw
 import dotenv
+import requests
+from datetime import datetime as dt
 
 dotenv.load_dotenv()
 
+BASE = "http://127.0.0.1:5000/"
 CLIENT_SECRET = getenv("CLIENT_SECRET")
 USERNAME = getenv("NAME")
 PASSWORD = getenv("PASSWORD")
@@ -25,48 +28,66 @@ REDDIT = praw.Reddit(
 
 
 class Drg:
-    def __init__(self, sub_id, time_created):
-        self.sub_id = sub_id
-        self.time_created = time_created
+    def __init__(self, submission_id, time_created, sub_reddit):
+        self.submission_id = submission_id
+        self.time_created = dt.fromtimestamp(time_created)
+        self.sub_reddit = sub_reddit
 
-    def __str__(self):
-        return f"Butts"
+    def __repr__(self):
+        return f"submission_id = {self.submission_id}, time_created = {self.time_created}, sub_reddit = {self.sub_reddit}"
 
 
 def main():
-    sub_count = 0
-    comment_count = 0
-    for submission in REDDIT.subreddit("Pokemon").top(time_filter="day", limit=None):
-        sub_count += 1
+    for submission in REDDIT.subreddit("DeepRockGalactic").top(
+        time_filter="day", limit=None
+    ):
         submission.comments.replace_more(limit=None)
-        search_pram = "Pikachu"
+        search_pram = "Rock and Stone!"
         if (
             search_pram.lower() in submission.title.lower()
             or search_pram.lower() in submission.selftext.lower()
         ):
-            sub = Drg(submission.id, submission.created_utc)
-            print("Found one!")
+            sub = Drg(
+                submission.id, submission.created_utc, submission.subreddit.display_name
+            )
+            print("Found one in post title/body!")
             send(sub)
-            break
+            continue
 
-        for comment in submission.comments.list():
-            comment_count += 1
-            if search_pram.lower() in comment.body.lower():
-                sub = Drg(submission.id, submission.created_utc)
-                print("Found one!")
-                send(sub)
-                break
+        elif search_pram.lower() in [
+            comment.body.lower() for comment in submission.comments.list()
+        ]:
+            sub = Drg(
+                submission.id,
+                submission.created_utc,
+                submission.subreddit.display_name,
+            )
+            print("Found one in comments!")
+            send(sub)
 
-    print(f"All finished! \n comment count = {comment_count}, sub_count = {sub_count}")
+        # for comment in submission.comments.list():
+        #     comment_count += 1
+        #     if search_pram.lower() in comment.body.lower():
+        #         sub = Drg(
+        #             submission.id,
+        #             submission.created_utc,
+        #             submission.subreddit.display_name,
+        #         )
+        #         print("Found one!")
+        #         send(sub)
+        #         break
+
+    print("All finished!")
 
 
 def send(obj):
-    """Temporary function, will eventually send a POST request to app.py's server
-
-    :param obj: object instatiated during main()'s searching
-    :type obj: instance object
-    """
-    print(f"Here is the output!: {obj}")
+    obj_dict = {
+        "submission_id": str(obj.submission_id),
+        "post_date": str(obj.time_created),
+        "sub_reddit": str(obj.sub_reddit),
+    }
+    response = requests.post(BASE + "add", json=obj_dict)
+    print(f"Added {response.json()}")
 
 
 if __name__ == "__main__":
