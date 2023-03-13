@@ -42,10 +42,10 @@ def main():
         time_filter="day", limit=None
     ):
         submission.comments.replace_more(limit=None)
-        search_pram = "Rock and Stone!"
+        search_param = "Rock and Stone!"
         if (
-            search_pram.lower() in submission.title.lower()
-            or search_pram.lower() in submission.selftext.lower()
+            search_param.lower() in submission.title.lower()
+            or search_param.lower() in submission.selftext.lower()
         ):
             sub = Drg(
                 submission.id, submission.created_utc, submission.subreddit.display_name
@@ -54,7 +54,7 @@ def main():
             send(sub)
             continue
 
-        elif search_pram.lower() in [
+        elif search_param.lower() in [
             comment.body.lower() for comment in submission.comments.list()
         ]:
             sub = Drg(
@@ -67,7 +67,7 @@ def main():
 
         # for comment in submission.comments.list():
         #     comment_count += 1
-        #     if search_pram.lower() in comment.body.lower():
+        #     if search_param.lower() in comment.body.lower():
         #         sub = Drg(
         #             submission.id,
         #             submission.created_utc,
