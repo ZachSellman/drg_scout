@@ -22,6 +22,11 @@ class Mention(db.Model):
         return f"submission_id: {self.submission_id}, post_date: {self.post_date}, sub_reddit: {self.sub_reddit}"
 
 
+# Temporary; run this block once then re-comment if db gets deleted.
+# with app.app_context():
+#     db.create_all()
+
+
 class GetMentions(Resource):
     def get(self):
         mentions = Mention.query.all()
