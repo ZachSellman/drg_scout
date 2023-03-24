@@ -8,6 +8,7 @@ import praw
 import dotenv
 import requests
 from datetime import datetime as dt
+from Drg_class import Drg
 
 dotenv.load_dotenv()
 
@@ -18,26 +19,17 @@ PASSWORD = getenv("PASSWORD")
 CLIENT_ID = getenv("CLIENT_ID")
 USER_AGENT = "drg_scout (by u/OmnicBoy)"
 
-REDDIT = praw.Reddit(
-    client_id=CLIENT_ID,
-    client_secret=CLIENT_SECRET,
-    password=PASSWORD,
-    user_agent=USER_AGENT,
-    username=USERNAME,
-)
-
-
-class Drg:
-    def __init__(self, submission_id, time_created, sub_reddit):
-        self.submission_id = submission_id
-        self.time_created = dt.fromtimestamp(time_created)
-        self.sub_reddit = sub_reddit
-
-    def __repr__(self):
-        return f"submission_id = {self.submission_id}, time_created = {self.time_created}, sub_reddit = {self.sub_reddit}"
-
 
 def main():
+
+    REDDIT = praw.Reddit(
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        password=PASSWORD,
+        user_agent=USER_AGENT,
+        username=USERNAME,
+    )
+
     for submission in REDDIT.subreddit("DeepRockGalactic").top(
         time_filter="day", limit=None
     ):
