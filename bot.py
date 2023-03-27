@@ -34,7 +34,7 @@ def main():
         time_filter="day", limit=None
     ):
         submission.comments.replace_more(limit=None)
-        search_param = "Rock and Stone!"
+        search_param = "drg"
         if (
             search_param.lower() in submission.title.lower()
             or search_param.lower() in submission.selftext.lower()
