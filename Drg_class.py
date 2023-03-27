@@ -1,3 +1,6 @@
+import datetime as dt
+
+
 class Drg:
     def __init__(self, submission_id, time_created, sub_reddit):
         self.submission_id = submission_id
