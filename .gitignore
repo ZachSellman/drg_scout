@@ -1,3 +1,4 @@
 .env
 todo.txt
 __pycache__
+.vscode

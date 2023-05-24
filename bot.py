@@ -1,15 +1,13 @@
-"""Simple Reddit bot that scans the past 24 hours of data from a subreddit for 
-mentions of Deep Rock Galactic.
+"""
+Reddit bot that scans a given subreddit for mentions of the game \
+Deep Rock Galactic in a give timeframe.
 """
 
 from os import getenv
-from dotenv import load_dotenv
 import praw
 import dotenv
 import requests
-from datetime import datetime as dt
 from Drg_class import Drg
-import json
 
 dotenv.load_dotenv()
 
@@ -40,7 +38,9 @@ def main():
             or search_param.lower() in submission.selftext.lower()
         ):
             sub = Drg(
-                submission.id, submission.created_utc, submission.subreddit.display_name
+                submission.id,
+                submission.created_utc,
+                submission.subreddit.display_name,  # noqa: E501
             )
             print("Found one in post title/body!")
             send(sub)
@@ -57,18 +57,6 @@ def main():
             print("Found one in comments!")
             send(sub)
 
-        # for comment in submission.comments.list():
-        #     comment_count += 1
-        #     if search_param.lower() in comment.body.lower():
-        #         sub = Drg(
-        #             submission.id,
-        #             submission.created_utc,
-        #             submission.subreddit.display_name,
-        #         )
-        #         print("Found one!")
-        #         send(sub)
-        #         break
-
     print("All finished!")
 
 
@@ -80,11 +68,8 @@ def send(obj):
         "post_date": str(obj.time_created),
         "sub_reddit": str(obj.sub_reddit),
     }
-    json_obj = json.dumps(obj_dict, indent=4)
     response = requests.post(BASE + "add", headers=headers, json=obj_dict)
-    print(response)
-    # # print(f"Added {response.json()}")
-    # print("Sent obj, but not confirmed response")
+    print(response.json())
 
 
 if __name__ == "__main__":
