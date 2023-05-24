@@ -20,7 +20,10 @@ class Mention(db.Model):
     sub_reddit = db.Column(db.String(25), nullable=False)
 
     def __repr__(self):
-        return f"submission_id: {self.submission_id}, post_date: {self.post_date}, sub_reddit: {self.sub_reddit}"
+        return (
+            f"submission_id: {self.submission_id}, "
+            "post_date: {self.post_date}, sub_reddit: {self.sub_reddit}"
+        )
 
 
 # Temporary; run this block once then re-comment if db gets deleted.
@@ -30,20 +33,31 @@ class Mention(db.Model):
 
 class GetMentions(Resource):
     def get(self):
+        """Get all entries from mentions table
+
+        :return: returns a dict containing all mentions from the db & status
+        :rtype: dict, response code
+        """
         mentions = Mention.query.all()
         mentions_list = []
         for mention in mentions:
+            print(mention)
             mention_data = {
                 "submission_id": mention.submission_id,
                 "post_date": mention.post_date,
                 "sub_reddit": mention.sub_reddit,
             }
             mentions_list.append(mention_data)
-            return {"Mentions": mentions_list}, 200
+        return {"Mentions": mentions_list}, 200
 
 
 class AddMention(Resource):
     def post(self):
+        """Create a new entry to the mentions db table
+
+        :return: returns the added entry and 201, or IntegrityError and 422
+        :response object
+        """
         if request.is_json:
             mention = Mention(
                 submission_id=request.json["submission_id"],
@@ -55,12 +69,15 @@ class AddMention(Resource):
                 db.session.commit()
 
             except exc.IntegrityError:
-                print(
-                    "IntegrityError: unique constraint failed; mention already exists in database"
+                return (
+                    {
+                        "error": (
+                            "IntegrityError: unique constraint failed; "
+                            "mention already exists in database."
+                        )
+                    },
+                    422,
                 )
-                return {
-                    "error": "IntegrityError: unique constraint failed; mention already exists in database"
-                }, 422
 
             return make_response(
                 jsonify(
