@@ -4,12 +4,13 @@
 from flask import Flask, request, jsonify, make_response
 from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import exc
 
 
 app = Flask(__name__)
 api = Api(app)
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///drg.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
 db = SQLAlchemy(app)
 
 
@@ -49,8 +50,18 @@ class AddMention(Resource):
                 post_date=request.json["post_date"],
                 sub_reddit=request.json["sub_reddit"],
             )
-            db.session.add(mention)
-            db.session.commit()
+            try:
+                db.session.add(mention)
+                db.session.commit()
+
+            except exc.IntegrityError:
+                print(
+                    "IntegrityError: unique constraint failed; mention already exists in database"
+                )
+                return {
+                    "error": "IntegrityError: unique constraint failed; mention already exists in database"
+                }, 422
+
             return make_response(
                 jsonify(
                     {

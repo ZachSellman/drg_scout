@@ -9,6 +9,7 @@ import dotenv
 import requests
 from datetime import datetime as dt
 from Drg_class import Drg
+import json
 
 dotenv.load_dotenv()
 
@@ -21,7 +22,6 @@ USER_AGENT = "drg_scout (by u/OmnicBoy)"
 
 
 def main():
-
     REDDIT = praw.Reddit(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
@@ -73,13 +73,18 @@ def main():
 
 
 def send(obj):
+    headers = {"Content_Type": "application/json"}
+
     obj_dict = {
         "submission_id": str(obj.submission_id),
         "post_date": str(obj.time_created),
         "sub_reddit": str(obj.sub_reddit),
     }
-    response = requests.post(BASE + "add", json=obj_dict)
-    print(f"Added {response.json()}")
+    json_obj = json.dumps(obj_dict, indent=4)
+    response = requests.post(BASE + "add", headers=headers, json=obj_dict)
+    print(response)
+    # # print(f"Added {response.json()}")
+    # print("Sent obj, but not confirmed response")
 
 
 if __name__ == "__main__":

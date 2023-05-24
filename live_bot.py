@@ -20,7 +20,6 @@ SEARCH_PARAMS = ["drg", "deep rock", "deep rock galactic"]
 
 
 def main():
-
     REDDIT = praw.Reddit(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
@@ -37,10 +36,14 @@ def main():
 
 
 def process_submission(submission):
-    for param in SEARCH_PARAMS:
-        if param in submission.title.lower() or param in submission.selftext.lower():
-            print("Found one!")
-            print(f"Submission title: {submission.title}")
+    print(f"Submission created at {submission.created_utc}")
+
+    # for param in SEARCH_PARAMS:
+    # if param in submission.title.lower() or param in submission.selftext.lower():
+    #     print("Found one!")
+    #     print(
+    #         f"Submission title: {submission.title}, Submission created at: {submission.created_utc}"
+    #     )
 
 
 if __name__ == "__main__":
