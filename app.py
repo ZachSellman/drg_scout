@@ -3,7 +3,7 @@ reddit trawlers and database to store collected data
 """
 
 from flask import Flask, request, jsonify, make_response, abort
-from flask_restful import Resource, Api, reqparse
+from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import exc
 
