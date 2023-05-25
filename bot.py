@@ -66,9 +66,11 @@ def send(obj):
     obj_dict = {
         "submission_id": str(obj.submission_id),
         "post_date": str(obj.time_created),
-        "sub_reddit": str(obj.sub_reddit),
+        "subreddit": str(obj.subreddit),
     }
-    response = requests.post(BASE + "add", headers=headers, json=obj_dict)
+    response = requests.post(
+        BASE + "mentions/all", headers=headers, json=obj_dict
+    )  # noqa: E501
     print(response.json())
 
 
