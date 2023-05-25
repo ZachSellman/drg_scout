@@ -57,8 +57,6 @@ def main():
             print("Found one in comments!")
             send(sub)
 
-    print("All finished!")
-
 
 def send(obj):
     headers = {"Content_Type": "application/json"}

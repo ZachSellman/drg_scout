@@ -61,6 +61,13 @@ class Mentions(Resource):
 
         return {"mention": mention_dict}, 200
 
+    def delete(self, submission_id):
+        abort_if_no_submission_id(submission_id)
+        mention = db.get_or_404(Mention_Model, submission_id)
+        db.session.delete(mention)
+        db.session.commit()
+        return {"Submission Deleted": mention.submission_id}, 202
+
 
 class Mentions_List(Resource):
     def get(self):
@@ -85,7 +92,7 @@ class Mentions_List(Resource):
         """Create a new entry to the mentions db table
 
         :return: returns the added entry and 201, or IntegrityError and 422
-        :response object
+        :rtype: json response, response code
         """
         if request.is_json:
             mention = Mention_Model(
